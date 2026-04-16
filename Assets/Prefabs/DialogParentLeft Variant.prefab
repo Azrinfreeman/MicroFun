@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4079471173710447764
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 388672950648662437, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1214
+      objectReference: {fileID: 0}
+    - target: {fileID: 623088594831473693, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 198
+      objectReference: {fileID: 0}
+    - target: {fileID: 2530824798167410472, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: de74dc7dbc0b3d34dbc3edd4074ed97d, type: 3}
+    - target: {fileID: 4489701368898713319, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: dialogList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4489701368898713319, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: 'dialogList.Array.data[0]'
+      value: Selepas menonton video  proses hidup mikroorganisma, boleh awak bincangkan
+        dan terangkan apakah proses yang terlibat?
+      objectReference: {fileID: 0}
+    - target: {fileID: 4489701368898713319, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: 'dialogList.Array.data[1]'
+      value: bakteria boleh ditemukan di udara, air, tanah dan pada hidupan lain 
+        seperti manusia, haiwan dan tumbuhan.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4489701368898713319, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: 'dialogList.Array.data[2]'
+      value: bakteria hidup dengan menyerap nutrient daripada benda hidup lain.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4489701368898713319, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: 'dialogList.Array.data[3]'
+      value: contoh bakteria ialah spirillum, streptococcus, escherichia coli dan
+        salmonella.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4489701368898713319, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: 'dialogList.Array.data[4]'
+      value: contoh fungi ialah kulat, yis dan penicillium.
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758028271126352841, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5263177814665534238, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5263177814665534238, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5263177814665534238, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5263177814665534238, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 450.53687
+      objectReference: {fileID: 0}
+    - target: {fileID: 5263177814665534238, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000061035156
+      objectReference: {fileID: 0}
+    - target: {fileID: 5263177814665534238, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6959595522694124777, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_Name
+      value: DialogParentLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 6959595522694124777, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7968098328559605750, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1263
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 288.5213
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8388106270334973200, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6255ced95dd90bf469424eb2f5478dc3, type: 3}

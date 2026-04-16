@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/StartScene.unity
+    guid: ca9581244abef984ba539d2353be4f42
+  - enabled: 1
+    path: Assets/Scenes/Activities.unity
+    guid: 67f1d094cb0f03a459615ac3954b26b5
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/akt1.unity
+    guid: f820959a34079da4c966fcae8da48bb3
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/elaborate1.unity
+    guid: 448568453ad92fe42a43ac99292b2a7a
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/elaborate2.unity
+    guid: 284080fa302e4d44c933b8b4a7ef7fa4
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/penicilum.unity
+    guid: 322fd4ff8a2bc3344b774f092d732964
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/yeast.unity
+    guid: c2dfa503868b2ca4b8be5f662636136f
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/kuiz1.unity
+    guid: d8d36ddfaad76e445a4ba6f4559dbe3d
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/rhizopus.unity
+    guid: 701ea94110157da4ab6fe709299a7894
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/salmonela.unity
+    guid: 3c23485e20580f14587a27e3606c8f2e
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/ecoli.unity
+    guid: 3b3391ff2b2e41441b107e6d68a8175b
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/streptococcus.unity
+    guid: 238a103d4325c7a4fb43bc12fa048dbb
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt1/spirillium.unity
+    guid: 06d1aa49a9956c9469971af5fa3586b8
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/akt2.unity
+    guid: 09ecb50fedc2cad42af99e13a30312c7
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/chlamydomonas.unity
+    guid: 46373297a5682944185555b9d50018ef
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/chrorella.unity
+    guid: 0ad3560541ce8ac44a758135a28f01f5
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/Volvox.unity
+    guid: 0bf042371a02b2c41b605ddbed92b718
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/paramesium.unity
+    guid: 85bcb76c65e380149bc869c0c7b097fb
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/amoeba.unity
+    guid: bea5c244434ff204290349e7d4c9f117
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/hiv.unity
+    guid: 2b8afb3038b13644fb10209ac7bc3460
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/influenza.unity
+    guid: 4732ee74797130e419d74e39c267575e
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/bakteriofaj.unity
+    guid: cf99e804bba47c5459048dfb345957a2
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt3/akt3.unity
+    guid: a7f39d71d9d113c4ab057c260a0ba241
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt4/akt4.unity
+    guid: 80c838ad180ebe043b2cc26d54332a32
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt5/akt5.unity
+    guid: 4fb920317a3806e4e8e092a8fd43bd88
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt5/kuiz5.unity
+    guid: fe614c4ceb623e54d9bf861dd8d92e31
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt6/akt6.unity
+    guid: a346bff81cd3cb547b0d5d95c91c2b71
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt7/akt7.unity
+    guid: 92d06a65c34d01b4ab7321a9386fd0cc
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt7/kuiz7.unity
+    guid: 6388029ff462b3e409762c78e14e7e74
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt8/akt8.unity
+    guid: 05e650f6666091442b0368512d9a4826
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt8/kuiz8.unity
+    guid: 46a1677fc44ce334f85b4553af8175cc
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
