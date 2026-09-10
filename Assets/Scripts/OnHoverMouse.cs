@@ -4,10 +4,17 @@ using UnityEngine.EventSystems;
 public class OnHoverMouse : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Transform Content;
+    public bool extraInfo;
+
+    public Transform extraInfoContent;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         Content.gameObject.SetActive(true);
+        if (extraInfo && extraInfoContent != null)
+        {
+            extraInfoContent.gameObject.SetActive(true);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -15,6 +22,10 @@ public class OnHoverMouse : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         if (Content != null)
         {
             Content.GetComponent<Animator>().Play("ExitContent");
+        }
+        if (extraInfo && extraInfoContent != null)
+        {
+            extraInfoContent.gameObject.SetActive(false);
         }
     }
 

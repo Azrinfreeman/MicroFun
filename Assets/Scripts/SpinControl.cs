@@ -1,58 +1,137 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class SpinControl : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    private bool isSpinning = false;
-
-    [Header("Settings")]
-    public float minSpinSpeed = 1000f; // Increased for more rotations
-    public float maxSpinSpeed = 5000f;
-
-    // Adding a "Jitter" makes it harder for the physics engine to repeat patterns
+    [Header("Legacy Settings (kept for scene compatibility)")]
+    public float minSpinSpeed = 500f;
+    public float maxSpinSpeed = 1202f;
     public float maxRandomStartRotation = 360f;
 
-    void Start()
+    [Header("Micro Squad Wheel")]
+    [Min(0.5f)] public float spinDuration = 4.2f;
+    [Min(1)] public int minTurns = 3;
+    [Min(1)] public int maxTurns = 5;
+    public AnimationCurve spinCurve = new AnimationCurve(
+        new Keyframe(0f, 0f, 0f, 1.8f),
+        new Keyframe(0.72f, 0.93f, 0.35f, 0.35f),
+        new Keyframe(1f, 1f, 0f, 0f));
+    public string[] categories = { "Bakteria", "Fungi", "Alga", "Protozoa", "Virus" };
+
+    [Header("Optional UI Hooks")]
+    public Button spinButton;
+    public TMP_Text resultLabel;
+    public RectTransform[] uprightLabels;
+    public UnityEvent<string> onCategorySelected = new UnityEvent<string>();
+
+    public bool IsSpinning => isSpinning;
+    public string LastCategory { get; private set; }
+
+    private bool isSpinning;
+    private Coroutine spinRoutine;
+    private Rigidbody2D rb;
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.angularVelocity = 0f;
+            rb.simulated = false;
+        }
+        if (spinButton != null)
+        {
+            spinButton.onClick.RemoveListener(Spin);
+            spinButton.onClick.AddListener(Spin);
+        }
 
-        // Ensure your Angular Drag is set to something like 1 or 2 in the Inspector
-        // so the wheel actually slows down naturally.
     }
 
-    void Update()
+    private void OnDestroy()
     {
-        // Use Mathf.Abs for angularVelocity because spinning clockwise results in negative velocity
-        if (isSpinning && Mathf.Abs(rb.angularVelocity) <= 0.1f)
+        if (spinButton != null)
+            spinButton.onClick.RemoveListener(Spin);
+    }
+
+    private void OnDisable()
+    {
+        if (spinRoutine != null)
         {
-            isSpinning = false;
-            rb.angularVelocity = 0;
-            CalculateResult();
+            StopCoroutine(spinRoutine);
+            spinRoutine = null;
         }
+
+        isSpinning = false;
+        if (spinButton != null)
+            spinButton.interactable = true;
     }
 
     public void Spin()
     {
-        if (isSpinning)
-            return; // Prevent double-clicking while spinning
+        if (isSpinning || categories == null || categories.Length == 0)
+            return;
 
-        // 1. Randomize the starting rotation slightly
-        // This breaks the "pattern" of where the physics drag starts calculating
-        transform.Rotate(0, 0, Random.Range(0f, maxRandomStartRotation));
-
-        isSpinning = true;
-
-        // 2. Apply a much larger range of torque
-        // Using a negative or positive random range can also help if you want it to spin both ways
-        float randomForce = Random.Range(minSpinSpeed, maxSpinSpeed);
-
-        rb.AddTorque(randomForce, ForceMode2D.Impulse);
+        spinRoutine = StartCoroutine(SpinRoutine());
     }
 
-    void CalculateResult()
+    private IEnumerator SpinRoutine()
     {
-        // Normalize the angle to be between 0 and 360
-        float finalAngle = transform.eulerAngles.z % 360;
-        Debug.Log("Wheel stopped at angle: " + finalAngle);
+        isSpinning = true;
+        if (spinButton != null)
+            spinButton.interactable = false;
+        if (resultLabel != null)
+            resultLabel.text = "Sedang berputar...";
+
+        int selectedIndex = Random.Range(0, categories.Length);
+        int turns = Random.Range(Mathf.Max(1, minTurns), Mathf.Max(minTurns, maxTurns) + 1);
+
+        float segmentAngle = 360f / categories.Length;
+        float startAngle = transform.localEulerAngles.z;
+        float targetNormalized = selectedIndex * segmentAngle;
+        float positiveDelta = Mathf.Repeat(targetNormalized - Mathf.Repeat(startAngle, 360f), 360f);
+        float targetAngle = startAngle + (turns * 360f) + positiveDelta;
+
+        float elapsed = 0f;
+        float duration = Mathf.Max(0.5f, spinDuration);
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float eased = spinCurve != null ? spinCurve.Evaluate(t) : Mathf.SmoothStep(0f, 1f, t);
+            SetLocalAngle(Mathf.LerpUnclamped(startAngle, targetAngle, eased));
+            yield return null;
+        }
+
+        SetLocalAngle(targetNormalized);
+        LastCategory = categories[selectedIndex];
+
+        if (resultLabel != null)
+            resultLabel.text = LastCategory + " dipilih!";
+
+        onCategorySelected.Invoke(LastCategory);
+
+        if (spinButton != null)
+            spinButton.interactable = true;
+
+        isSpinning = false;
+        spinRoutine = null;
+    }
+
+    private void SetLocalAngle(float angle)
+    {
+        Vector3 rotation = transform.localEulerAngles;
+        rotation.z = angle;
+        transform.localEulerAngles = rotation;
+        if (uprightLabels == null)
+            return;
+
+        for (int i = 0; i < uprightLabels.Length; i++)
+        {
+            if (uprightLabels[i] != null)
+                uprightLabels[i].localEulerAngles = new Vector3(0f, 0f, -angle);
+        }
     }
 }

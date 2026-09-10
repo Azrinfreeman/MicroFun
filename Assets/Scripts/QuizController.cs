@@ -1,278 +1,301 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class QuizController : MonoBehaviour
 {
     public static QuizController instance;
-    public static System.Random rnd = new System.Random();
-
-    public static System.Random rnd1 = new System.Random();
-
-    //questioon number is used to know which question is currently shown, so we can check if the answer is correct
-    public int questionNumber;
-
-    //button number is used to know which button was the answer, so we can check if the answer is correct
-    public int buttonNumber;
-
-    public int numberCount;
-
-    public int totalQuestions;
-
-    public Transform questionText;
-    public Transform WinPanel;
-
-    public List<Transform> buttonAnswers;
-    public List<int> randomAnswer;
-    public TextMeshProUGUI indicatorText;
-    public AudioSource wrong;
-    public AudioSource correct;
-
-    void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+    public int totalQuestions { get { return questions == null ? 0 : questions.Count; } }
 
     [System.Serializable]
     public class Question
     {
-        public string questionText;
-        public List<string> choices;
-        public int correctChoicesIndex;
-
-        public Question(string questionText, List<string> choices, int correctChoicesIndex)
-        {
-            this.questionText = questionText;
-            this.choices = choices;
-            this.correctChoicesIndex = correctChoicesIndex;
-        }
+        [TextArea(2, 5)] public string question;
+        public List<string> choices = new List<string>();
+        public int correctIndex;
+        public List<Sprite> choiceIcons = new List<Sprite>();
+        public AudioClip narrationClip;
     }
 
+    [Header("Quiz content")]
     public List<Question> questions = new List<Question>();
 
-    public void showQuestion()
+    [Header("Scene references")]
+    public List<Transform> buttonAnswers = new List<Transform>();
+    public Transform questionText;
+    public Transform WinPanel;
+    public TextMeshProUGUI indicatorText;
+    public AudioSource wrong;
+    public AudioSource correct;
+    [SerializeField] private Button nextButton;
+
+    [Header("Kuiz 8 presentation")]
+    [SerializeField] private bool useSubmitConfirmation;
+    [SerializeField] private TextMeshProUGUI actionButtonLabel;
+    [SerializeField] private List<Image> choiceIconImages = new List<Image>();
+    [SerializeField] private Button narrationButton;
+    [SerializeField] private AudioSource narrationSource;
+
+    private int currentQuestionIndex;
+    private int pendingAnswerIndex = -1;
+    private bool answerResolved;
+
+    private readonly Color idleCardColor = new Color(1f, 0.98f, 0.87f, 1f);
+    private readonly Color selectedCardColor = new Color(0.90f, 0.98f, 0.68f, 1f);
+    private readonly Color correctCardColor = new Color(0.72f, 0.94f, 0.55f, 1f);
+    private readonly Color wrongCardColor = new Color(1f, 0.72f, 0.64f, 1f);
+
+    private void Awake()
     {
-        if (questions.Count > 0)
-        {
-            StartCoroutine(showQuest());
-        }
-        else
-        {
-            WinPanel.transform.gameObject.SetActive(true);
-        }
+        instance = this;
     }
 
-    IEnumerator showQuest()
-    { //get random question number
-        questionNumber = rnd.Next(0, questions.Count);
-        //set question text and choices
-        questionText.GetComponent<TMPro.TextMeshProUGUI>().text = questions[
-            questionNumber
-        ].questionText;
-
-        //clear the button of any text and function
-        for (int a = 0; a < 4; a++)
+    private void Start()
+    {
+        if (nextButton == null)
         {
-            buttonAnswers[a].GetComponent<Button>().onClick.RemoveAllListeners();
-            buttonAnswers[a]
-                .GetComponent<Button>()
-                .transform.GetChild(0)
-                .GetComponent<TextMeshProUGUI>()
-                .text = "";
-            buttonAnswers[a].GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-            //            Debug.Log("Clear button");
+            GameObject foundButton = GameObject.Find("PilihJawapanButton");
+            if (foundButton == null) foundButton = GameObject.Find("SeterusnyaButton");
+            if (foundButton != null) nextButton = foundButton.GetComponent<Button>();
         }
-        EnableAllButtons();
-        //buttonTotal is used to generate random buttonNumber
-        int buttonTotal = 0;
-        //generate random button number
-        buttonNumber = questions[questionNumber].correctChoicesIndex;
 
-        //apply the right button along with text
+        if (nextButton != null)
+        {
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(HandleActionButton);
+        }
+
+        if (narrationButton != null)
+        {
+            narrationButton.onClick.RemoveAllListeners();
+            narrationButton.onClick.AddListener(PlayCurrentQuestionAudio);
+        }
+
+        if (WinPanel != null) WinPanel.gameObject.SetActive(false);
+        currentQuestionIndex = 0;
+        LoadQuestion();
+    }
+
+    private void LoadQuestion()
+    {
+        if (questions == null || questions.Count == 0) return;
+
+        answerResolved = false;
+        pendingAnswerIndex = -1;
+        Question currentQuestion = questions[currentQuestionIndex];
+
+        if (questionText != null)
+        {
+            TextMeshProUGUI questionLabel = questionText.GetComponent<TextMeshProUGUI>();
+            if (questionLabel != null)
+            {
+                questionLabel.text = string.IsNullOrWhiteSpace(currentQuestion.question)
+                    ? "Apakah definisi mikroorganisma?"
+                    : currentQuestion.question;
+            }
+        }
+
+        if (indicatorText != null)
+            indicatorText.text = "Soalan " + (currentQuestionIndex + 1) + "/" + questions.Count;
 
         for (int i = 0; i < buttonAnswers.Count; i++)
         {
-            //if buttons are more than choices, hide them, else show them and set text
-            if (i > questions[questionNumber].choices.Count - 1)
+            if (buttonAnswers[i] == null) continue;
+
+            bool visible = i < currentQuestion.choices.Count;
+            buttonAnswers[i].gameObject.SetActive(visible);
+            if (!visible) continue;
+
+            Button answerButton = buttonAnswers[i].GetComponent<Button>();
+            Image answerImage = buttonAnswers[i].GetComponent<Image>();
+            TextMeshProUGUI answerLabel = buttonAnswers[i].GetComponentInChildren<TextMeshProUGUI>(true);
+
+            if (answerImage != null) answerImage.color = idleCardColor;
+            if (answerLabel != null) answerLabel.text = currentQuestion.choices[i];
+
+            Transform letterLabel = buttonAnswers[i].Find("LetterBadge/LetterLabel");
+            if (letterLabel != null)
             {
-                buttonAnswers[i].gameObject.SetActive(false);
+                TextMeshProUGUI letterText = letterLabel.GetComponent<TextMeshProUGUI>();
+                if (letterText != null) letterText.text = ((char)('A' + i)).ToString();
             }
-            else
+
+            if (answerButton != null)
             {
-                if (buttonNumber == i)
+                answerButton.interactable = true;
+                answerButton.onClick.RemoveAllListeners();
+                int answerIndex = i;
+                answerButton.onClick.AddListener(delegate
                 {
-                    buttonAnswers[buttonNumber]
-                        .GetComponent<Button>()
-                        .onClick.AddListener(() => CorrectButtonFunction(buttonNumber));
-                    buttonAnswers[i].GetComponentInChildren<TMPro.TextMeshProUGUI>().text =
-                        questions[questionNumber].choices[i];
-                }
-
-                buttonTotal++;
-            }
-        }
-
-        //apply the wrong button
-        for (int i = 0; i < buttonTotal; i++)
-        {
-            if (i != buttonNumber)
-            {
-                //the list
-                int chooseRandom = rnd.Next(0, questions[questionNumber].choices.Count);
-
-                //if list is empty (first time)
-                if (randomAnswer.Count == 0)
-                {
-                    while (chooseRandom == questionNumber)
-                    {
-                        chooseRandom = rnd.Next(0, questions[questionNumber].choices.Count);
-                    }
-                    randomAnswer.Add(chooseRandom);
-                }
-                else
-                {
-                    // check if randomnumbers are duplicated in list
-                    for (int l = 0; l < randomAnswer.Count; l++)
-                    {
-                        //                        Debug.Log("Check");
-                        while (randomAnswer[l] == chooseRandom)
-                        {
-                            //          Debug.Log("Duplicated");
-                            //generate new number if chooseRandom already in the list
-                            chooseRandom = rnd.Next(0, questions[questionNumber].choices.Count);
-                        }
-                    }
-                    //check if answers is already selected from the list
-                    while (chooseRandom == questionNumber)
-                    {
-                        Debug.Log("Duplicated");
-                        //generate new number if chooseRandom already in the list
-                        chooseRandom = rnd.Next(0, questions[questionNumber].choices.Count);
-                    }
-
-                    //
-
-                    randomAnswer.Add(chooseRandom);
-                }
-                buttonAnswers[i].GetComponent<Button>().onClick.RemoveAllListeners();
-                buttonAnswers[i]
-                    .GetComponent<Button>()
-                    .onClick.AddListener(() => IncorrectButtonFunction());
-                buttonAnswers[i].GetComponentInChildren<TMPro.TextMeshProUGUI>().text = questions[
-                    questionNumber
-                ].choices[i];
+                    if (useSubmitConfirmation) SelectPendingAnswer(answerIndex);
+                    else SelectAnswer(answerIndex);
+                });
             }
         }
-        numberCount++;
-        indicatorText.text = numberCount + " / " + totalQuestions;
 
-        //assign button
-        yield return new WaitForSeconds(1);
+        RefreshChoiceIcons(currentQuestion);
+
+        if (nextButton != null) nextButton.interactable = !useSubmitConfirmation && answerResolved;
+        SetActionLabel(useSubmitConfirmation ? "PILIH JAWAPAN" : "SETERUSNYA");
+
+        if (narrationButton != null)
+            narrationButton.interactable = currentQuestion.narrationClip != null && narrationSource != null;
     }
 
-    IEnumerator incorrectAnswer()
+    public void SelectPendingAnswer(int answerIndex)
     {
-        DisableAllButtons();
-        if (GameObject.Find("wrong").GetComponent<AudioSource>().isPlaying)
+        if (answerResolved || questions == null || currentQuestionIndex >= questions.Count) return;
+
+        Question currentQuestion = questions[currentQuestionIndex];
+        if (answerIndex < 0 || answerIndex >= currentQuestion.choices.Count) return;
+
+        pendingAnswerIndex = answerIndex;
+        for (int i = 0; i < buttonAnswers.Count; i++)
         {
-            GameObject.Find("wrong").GetComponent<AudioSource>().Stop();
+            if (buttonAnswers[i] == null || !buttonAnswers[i].gameObject.activeSelf) continue;
+            SetAnswerColor(i, i == pendingAnswerIndex ? selectedCardColor : idleCardColor);
         }
-        if (!GameObject.Find("wrong").GetComponent<AudioSource>().isPlaying)
+
+        if (nextButton != null) nextButton.interactable = true;
+    }
+
+    public void SubmitPendingAnswer()
+    {
+        if (!useSubmitConfirmation || answerResolved || pendingAnswerIndex < 0) return;
+        EvaluateAnswer(pendingAnswerIndex);
+    }
+
+    public void SelectAnswer(int answerIndex)
+    {
+        if (useSubmitConfirmation)
         {
-            GameObject.Find("wrong").GetComponent<AudioSource>().Play();
-            // GameObject.Find("aww").GetComponent<AudioSource>().Play();
+            SelectPendingAnswer(answerIndex);
+            return;
         }
-        buttonAnswers[buttonNumber].GetComponent<Image>().color = new Color32(54, 217, 42, 255);
-        // cross.gameObject.SetActive(true);
-        questions.RemoveAt(questionNumber);
-        yield return new WaitForSeconds(2f);
-        // cross.gameObject.SetActive(false);
 
-        //repeat
-        RepeatQuestion();
+        EvaluateAnswer(answerIndex);
     }
 
-    public void CorrectButtonFunction(int buttonNum)
+    private void HandleActionButton()
     {
-        StartCoroutine(roundCollected(buttonNum));
-    }
-
-    public void IncorrectButtonFunction()
-    {
-        StartCoroutine(incorrectAnswer());
-    }
-
-    IEnumerator roundCollected(int buttonNum)
-    {
-        ScoreController.instance.AddScore(1);
-        DisableAllButtons();
-        if (GameObject.Find("rewarded").GetComponent<AudioSource>().isPlaying)
+        if (answerResolved)
         {
-            GameObject.Find("rewarded").GetComponent<AudioSource>().Stop();
+            NextQuestion();
+            return;
         }
-        if (!GameObject.Find("rewarded").GetComponent<AudioSource>().isPlaying)
+
+        if (useSubmitConfirmation) SubmitPendingAnswer();
+    }
+
+    private void EvaluateAnswer(int answerIndex)
+    {
+        if (answerResolved || questions == null || currentQuestionIndex >= questions.Count) return;
+
+        Question currentQuestion = questions[currentQuestionIndex];
+        if (answerIndex < 0 || answerIndex >= currentQuestion.choices.Count) return;
+
+        if (answerIndex == currentQuestion.correctIndex)
         {
-            GameObject.Find("rewarded").GetComponent<AudioSource>().Play();
-            GameObject.Find("yay").GetComponent<AudioSource>().Play();
+            answerResolved = true;
+            PlaySound(correct);
+
+            if (ScoreController.instance != null) ScoreController.instance.AddScore(1);
+
+            for (int i = 0; i < buttonAnswers.Count; i++)
+            {
+                Button answerButton = buttonAnswers[i] == null ? null : buttonAnswers[i].GetComponent<Button>();
+                if (answerButton != null) answerButton.interactable = false;
+            }
+
+            SetAnswerColor(answerIndex, correctCardColor);
+            if (nextButton != null) nextButton.interactable = true;
+            SetActionLabel("SETERUSNYA");
         }
-        buttonAnswers[buttonNum].GetComponent<Image>().color = new Color32(54, 217, 42, 255);
-        questions.RemoveAt(questionNumber);
-        //post question
-        //ScoreController.instance.AddScore(10);
-        //tick.gameObject.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        //tick.gameObject.SetActive(false);
-        //EnableAllButtons();
-        yield return new WaitForSeconds(0.3f);
-
-        //repeat
-        RepeatQuestion();
-    }
-
-    private void RepeatQuestion()
-    {
-        Debug.Log("repeat");
-
-        showQuestion();
-    }
-
-    private void DisableAllButtons()
-    {
-        for (int a = 0; a < 4; a++)
+        else
         {
-            buttonAnswers[a].GetComponent<Button>().enabled = false;
-            buttonAnswers[a].GetComponent<Image>().color = new Color32(77, 99, 243, 255);
-            //            Debug.Log("Clear button");
-        }
-    }
-
-    void EnableAllButtons()
-    {
-        for (int a = 0; a < 4; a++)
-        {
-            buttonAnswers[a].GetComponent<Button>().enabled = true;
+            PlaySound(wrong);
+            StartCoroutine(ShowWrongAnswer(answerIndex));
         }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private IEnumerator ShowWrongAnswer(int answerIndex)
     {
-        totalQuestions = questions.Count;
-        indicatorText.text = numberCount + " / " + totalQuestions;
-        showQuestion();
+        if (answerIndex < 0 || answerIndex >= buttonAnswers.Count || buttonAnswers[answerIndex] == null)
+            yield break;
+
+        Button pressedButton = buttonAnswers[answerIndex].GetComponent<Button>();
+        if (pressedButton != null) pressedButton.interactable = false;
+
+        SetAnswerColor(answerIndex, wrongCardColor);
+        yield return new WaitForSeconds(0.45f);
+
+        Color restore = useSubmitConfirmation && pendingAnswerIndex == answerIndex
+            ? selectedCardColor
+            : idleCardColor;
+        SetAnswerColor(answerIndex, restore);
+
+        if (!answerResolved && pressedButton != null) pressedButton.interactable = true;
     }
 
-    // Update is called once per frame
-    void Update() { }
+    public void NextQuestion()
+    {
+        if (!answerResolved) return;
+
+        if (currentQuestionIndex < questions.Count - 1)
+        {
+            currentQuestionIndex++;
+            LoadQuestion();
+            return;
+        }
+
+        if (WinPanel != null) WinPanel.gameObject.SetActive(true);
+    }
+
+    public void PlayCurrentQuestionAudio()
+    {
+        if (questions == null || currentQuestionIndex < 0 || currentQuestionIndex >= questions.Count)
+            return;
+
+        AudioClip clip = questions[currentQuestionIndex].narrationClip;
+        if (clip == null || narrationSource == null) return;
+
+        narrationSource.Stop();
+        narrationSource.clip = clip;
+        narrationSource.Play();
+    }
+
+    private void RefreshChoiceIcons(Question currentQuestion)
+    {
+        for (int i = 0; i < choiceIconImages.Count; i++)
+        {
+            Image icon = choiceIconImages[i];
+            if (icon == null) continue;
+
+            Sprite sprite = currentQuestion.choiceIcons != null && i < currentQuestion.choiceIcons.Count
+                ? currentQuestion.choiceIcons[i]
+                : null;
+            icon.sprite = sprite;
+            icon.enabled = sprite != null;
+            icon.gameObject.SetActive(sprite != null);
+        }
+    }
+
+    private void SetActionLabel(string value)
+    {
+        if (actionButtonLabel != null) actionButtonLabel.text = value;
+    }
+
+    private void SetAnswerColor(int answerIndex, Color color)
+    {
+        if (answerIndex < 0 || answerIndex >= buttonAnswers.Count || buttonAnswers[answerIndex] == null) return;
+        Image answerImage = buttonAnswers[answerIndex].GetComponent<Image>();
+        if (answerImage != null) answerImage.color = color;
+    }
+
+    private void PlaySound(AudioSource source)
+    {
+        if (source != null) source.Play();
+    }
 }

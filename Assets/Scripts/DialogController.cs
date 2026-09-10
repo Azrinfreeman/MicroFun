@@ -12,35 +12,62 @@ public class DialogController : MonoBehaviour
     public Button exitButton;
     public float typingSpeed = 0.05f;
 
-    // If using an Arabic fixer plugin, you'd process the string first
     private string fullText;
     private string currentText = "";
-
     public int currentDialogIndex = 0;
-
     public bool PressToStart = false;
+
+    // Track the coroutine to prevent multiple instances running
+    private Coroutine typingCoroutine;
+
+    // Awake is better for finding references
+    void Awake()
+    {
+        nextButton = transform.Find("textDialog").GetChild(0).GetComponent<Button>();
+        exitButton = transform.Find("ExitButton").GetComponent<Button>();
+        textDisplay = transform.Find("textDialog").GetComponent<TextMeshProUGUI>();
+
+        nextButton.onClick.AddListener(NextDialog);
+    }
+
+    // This runs EVERY time the object is set to Active
+    void OnEnable()
+    {
+        // Reset or continue from the last index when the object is re-enabled
+        if (dialogList != null && dialogList.Count > 0)
+        {
+            exitButton.transform.gameObject.SetActive(false);
+            StartTypewriter(dialogList[currentDialogIndex]);
+        }
+    }
 
     public void StartTypewriter(string textToType)
     {
         if (PressToStart == false)
         {
             fullText = textToType;
-            StartCoroutine(ShowText());
+
+            // If a routine is already running, stop it first
+            if (typingCoroutine != null)
+                StopCoroutine(typingCoroutine);
+
+            typingCoroutine = StartCoroutine(ShowText());
         }
     }
 
     IEnumerator ShowText()
     {
         nextButton.transform.gameObject.SetActive(false);
+        textDisplay.text = ""; // Clear text at the start
+
         for (int i = 0; i <= fullText.Length; i++)
         {
-            // Substring gets the characters one by one
             currentText = fullText.Substring(0, i);
             textDisplay.text = currentText;
-
-            // Wait for the delay
             yield return new WaitForSeconds(typingSpeed);
         }
+
+        // Logic for buttons after typing finishes
         if (currentDialogIndex == dialogList.Count - 1)
         {
             nextButton.transform.gameObject.SetActive(false);
@@ -50,30 +77,17 @@ public class DialogController : MonoBehaviour
         {
             nextButton.transform.gameObject.SetActive(true);
         }
+
+        typingCoroutine = null; // Clear reference
     }
 
     public void NextDialog()
     {
-        currentText = "";
         currentDialogIndex++;
         if (currentDialogIndex < dialogList.Count)
         {
             StartTypewriter(dialogList[currentDialogIndex]);
         }
-        else { }
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        currentDialogIndex = 0;
-        nextButton = transform.Find("textDialog").GetChild(0).GetComponent<Button>();
-        exitButton = transform.Find("ExitButton").GetComponent<Button>();
-        textDisplay = transform.Find("textDialog").GetComponent<TextMeshProUGUI>();
-        exitButton.transform.gameObject.SetActive(false);
-        nextButton.onClick.AddListener(NextDialog);
-
-        StartTypewriter(dialogList[currentDialogIndex]); // Start with the first dialog in the list
     }
 
     public void StartingWrite()
@@ -81,7 +95,4 @@ public class DialogController : MonoBehaviour
         PressToStart = false;
         StartTypewriter(dialogList[currentDialogIndex]);
     }
-
-    // Update is called once per frame
-    void Update() { }
 }

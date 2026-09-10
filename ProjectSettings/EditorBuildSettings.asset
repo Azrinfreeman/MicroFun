@@ -48,6 +48,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Aktivity/akt2/akt2.unity
     guid: 09ecb50fedc2cad42af99e13a30312c7
   - enabled: 1
+    path: Assets/Scenes/Aktivity/akt8/Ending.unity
+    guid: 5de87cf87b39eb349b581e8968fd8af3
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt2/kuiz2.unity
+    guid: 3484c78a26329544d8333443b7c04434
+  - enabled: 1
     path: Assets/Scenes/Aktivity/akt2/chlamydomonas.unity
     guid: 46373297a5682944185555b9d50018ef
   - enabled: 1
@@ -78,17 +84,38 @@ EditorBuildSettings:
     path: Assets/Scenes/Aktivity/akt4/akt4.unity
     guid: 80c838ad180ebe043b2cc26d54332a32
   - enabled: 1
+    path: Assets/Scenes/Aktivity/akt4/Microscene4.unity
+    guid: a7de88be3a0017f419d3f3d3408f4ff6
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt4/quiz4.unity
+    guid: 0f29ff091d4cd4742834aa7e615d691f
+  - enabled: 1
     path: Assets/Scenes/Aktivity/akt5/akt5.unity
     guid: 4fb920317a3806e4e8e092a8fd43bd88
   - enabled: 1
     path: Assets/Scenes/Aktivity/akt5/kuiz5.unity
     guid: fe614c4ceb623e54d9bf861dd8d92e31
   - enabled: 1
+    path: Assets/Scenes/Aktivity/akt5/microscene5.unity
+    guid: b6ff63a43299b674a8800e4839947e41
+  - enabled: 1
     path: Assets/Scenes/Aktivity/akt6/akt6.unity
     guid: a346bff81cd3cb547b0d5d95c91c2b71
   - enabled: 1
+    path: Assets/Scenes/Aktivity/akt6/SceneV1.unity
+    guid: d6c607e34f1c4b347ad4e353bdf16aa3
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt6/SceneV2.unity
+    guid: 5218e2bd8126b664193f4b8289353426
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt6/SceneV3.unity
+    guid: 3e783cdfd5ad0ed45a8edceaf081948b
+  - enabled: 1
     path: Assets/Scenes/Aktivity/akt7/akt7.unity
     guid: 92d06a65c34d01b4ab7321a9386fd0cc
+  - enabled: 1
+    path: Assets/Scenes/Aktivity/akt7/microscene7.unity
+    guid: 4e4a45c7e72b1e945a148a8f845aef02
   - enabled: 1
     path: Assets/Scenes/Aktivity/akt7/kuiz7.unity
     guid: 6388029ff462b3e409762c78e14e7e74
